@@ -67,6 +67,8 @@ export async function POST(request: NextRequest) {
         role: user.role,
         permissions: user.permissions,
       },
+      // All users go to map view after login
+      redirectTo: "/",
     })
   } catch (error) {
     console.error("Sign in error:", error)

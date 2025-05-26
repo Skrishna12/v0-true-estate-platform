@@ -1,26 +1,40 @@
 "use client"
 
-import { useState } from "react"
-import Navigation from "@/components/navigation"
-import SearchInterface from "@/components/search-interface"
+import { useEffect, useState } from "react"
+import LandingPage from "@/components/landing-page"
 import MapView from "@/components/map-view"
-import KnowledgeBase from "@/components/knowledge-base"
-import AdvancedTools from "@/components/advanced-tools"
-import Footer from "@/components/footer"
 
 export default function HomePage() {
-  const [currentView, setCurrentView] = useState<"search" | "map" | "knowledge" | "tools">("search")
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation currentView={currentView} setCurrentView={setCurrentView} />
+  useEffect(() => {
+    // Check if user is logged in
+    const token = localStorage.getItem("token")
+    const userData = localStorage.getItem("user")
 
-      {currentView === "search" && <SearchInterface />}
-      {currentView === "map" && <MapView />}
-      {currentView === "knowledge" && <KnowledgeBase />}
-      {currentView === "tools" && <AdvancedTools />}
+    if (token && userData) {
+      setIsLoggedIn(true)
+    }
+    setIsLoading(false)
+  }, [])
 
-      <Footer />
-    </div>
-  )
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading TrueEstate...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // If logged in, show map view directly
+  if (isLoggedIn) {
+    return <MapView />
+  }
+
+  // If not logged in, show landing page
+  return <LandingPage />
 }

@@ -4,16 +4,95 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Plus, Minus, Maximize, Target, Settings, Filter, Heart } from "lucide-react"
+import { MapPin, Plus, Minus, Maximize, Target, Settings, Filter, Heart, Building2, Bell, User } from "lucide-react"
 
 export default function MapView() {
   const [activeView, setActiveView] = useState("property")
   const [showPropertyPopup, setShowPropertyPopup] = useState(true)
+  const [currentView, setCurrentView] = useState("map")
+
+  const handleLogout = () => {
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    window.location.href = "/"
+  }
+
+  const handleNavigation = (view: string) => {
+    setCurrentView(view)
+    // You can add routing logic here or use Next.js router
+    if (view === "search") {
+      window.location.href = "/search"
+    } else if (view === "knowledge") {
+      window.location.href = "/knowledge"
+    } else if (view === "tools") {
+      window.location.href = "/tools"
+    }
+  }
 
   return (
     <div className="h-screen bg-gray-100 relative">
+      {/* Navigation for logged-in users */}
+      <nav className="absolute top-0 left-0 right-0 bg-white shadow-sm border-b z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <div className="flex items-center space-x-2">
+              <div className="bg-blue-600 p-2 rounded-lg">
+                <Building2 className="h-6 w-6 text-white" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold text-gray-900">TrueEstate</span>
+                <span className="text-xs text-gray-500">Clarity before Capital</span>
+              </div>
+            </div>
+
+            {/* Navigation Links */}
+            <div className="hidden md:flex items-center space-x-8">
+              <button
+                onClick={() => handleNavigation("search")}
+                className="text-gray-700 hover:text-gray-900 transition-colors"
+              >
+                Search Properties
+              </button>
+              <button onClick={() => setCurrentView("map")} className="text-blue-600 font-medium transition-colors">
+                Wealth Map
+              </button>
+              <button
+                onClick={() => handleNavigation("knowledge")}
+                className="text-gray-700 hover:text-gray-900 transition-colors"
+              >
+                Knowledge Base
+              </button>
+              <button
+                onClick={() => handleNavigation("tools")}
+                className="text-gray-700 hover:text-gray-900 transition-colors"
+              >
+                Tools
+              </button>
+
+              {/* User Actions */}
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <Bell className="h-5 w-5 text-gray-500" />
+                  <Badge className="absolute -top-2 -right-2 h-4 w-4 p-0 flex items-center justify-center text-xs bg-red-500">
+                    2
+                  </Badge>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <User className="h-5 w-5 text-gray-500" />
+                  <span className="text-sm font-medium">AU</span>
+                </div>
+                <Button onClick={handleLogout} variant="outline" size="sm">
+                  Sign Out
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       {/* View Toggle */}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20">
+      <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-20">
         <div className="flex bg-white rounded-lg shadow-lg p-1">
           <button
             onClick={() => setActiveView("property")}
@@ -35,7 +114,7 @@ export default function MapView() {
       </div>
 
       {/* Map Container */}
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full pt-16">
         {/* Map Controls */}
         <div className="absolute top-4 left-4 z-10 space-y-2">
           <div className="bg-white rounded-lg shadow-lg p-2">
@@ -157,7 +236,7 @@ export default function MapView() {
       </div>
 
       {/* Right Sidebar */}
-      <div className="absolute top-0 right-0 w-80 h-full bg-white shadow-xl z-10 overflow-y-auto">
+      <div className="absolute top-16 right-0 w-80 h-full bg-white shadow-xl z-10 overflow-y-auto">
         <div className="p-6 space-y-6">
           {/* Live Market Intelligence */}
           <div>

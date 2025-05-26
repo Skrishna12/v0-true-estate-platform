@@ -9,7 +9,13 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Eye, EyeOff, Building2 } from "lucide-react"
+import { Eye, EyeOff, Building2, Info } from "lucide-react"
+
+const demoCredentials = [
+  { role: "Admin", email: "admin@trueestate.com", password: "demo", color: "bg-red-50 border-red-200" },
+  { role: "User", email: "user@trueestate.com", password: "demo", color: "bg-blue-50 border-blue-200" },
+  { role: "Agent", email: "agent@trueestate.com", password: "demo", color: "bg-green-50 border-green-200" },
+]
 
 export default function SignInPage() {
   const [email, setEmail] = useState("")
@@ -36,7 +42,19 @@ export default function SignInPage() {
 
       if (response.ok) {
         localStorage.setItem("token", data.token)
-        window.location.href = "/dashboard"
+        localStorage.setItem("user", JSON.stringify(data.user))
+
+        // Redirect based on role
+        switch (data.user.role) {
+          case "admin":
+            window.location.href = "/admin/dashboard"
+            break
+          case "agent":
+            window.location.href = "/agent/dashboard"
+            break
+          default:
+            window.location.href = "/dashboard"
+        }
       } else {
         setError(data.message || "Sign in failed")
       }
@@ -45,6 +63,11 @@ export default function SignInPage() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleDemoLogin = (credentials: { email: string; password: string }) => {
+    setEmail(credentials.email)
+    setPassword(credentials.password)
   }
 
   return (
@@ -61,6 +84,33 @@ export default function SignInPage() {
           <h2 className="text-3xl font-bold text-gray-900">Sign in to your account</h2>
           <p className="mt-2 text-sm text-gray-600">Access your real estate intelligence platform</p>
         </div>
+
+        {/* Demo Credentials */}
+        <Card className="bg-blue-50 border-blue-200">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center space-x-2">
+              <Info className="h-4 w-4" />
+              <span>Demo Credentials</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {demoCredentials.map((cred, index) => (
+              <div
+                key={index}
+                className={`p-3 rounded-lg border cursor-pointer hover:shadow-sm transition-shadow ${cred.color}`}
+                onClick={() => handleDemoLogin(cred)}
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <div className="font-medium text-sm">{cred.role}</div>
+                    <div className="text-xs text-gray-600">{cred.email}</div>
+                  </div>
+                  <div className="text-xs text-gray-500">Click to use</div>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
 
         {/* Sign In Form */}
         <Card>

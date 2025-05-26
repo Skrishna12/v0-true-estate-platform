@@ -96,12 +96,12 @@ export default function SignUpPage() {
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="flex justify-center items-center space-x-2 mb-4">
+          <Link href="/" className="flex justify-center items-center space-x-2 mb-4">
             <div className="bg-blue-600 p-2 rounded-lg">
               <Building2 className="h-6 w-6 text-white" />
             </div>
             <span className="text-2xl font-bold text-gray-900">TrueEstate</span>
-          </div>
+          </Link>
           <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>
           <p className="mt-2 text-sm text-gray-600">Join the real estate intelligence platform</p>
         </div>

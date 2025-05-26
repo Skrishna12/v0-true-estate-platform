@@ -1,9 +1,33 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { MongoClient } from "mongodb"
-import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 
-const client = new MongoClient(process.env.MONGO_URI!)
+// Define user roles and credentials
+const users = [
+  {
+    id: "admin-001",
+    email: "admin@trueestate.com",
+    password: "demo",
+    name: "Admin User",
+    role: "admin",
+    permissions: ["all"],
+  },
+  {
+    id: "user-001",
+    email: "user@trueestate.com",
+    password: "demo",
+    name: "Regular User",
+    role: "user",
+    permissions: ["search", "view", "save"],
+  },
+  {
+    id: "agent-001",
+    email: "agent@trueestate.com",
+    password: "demo",
+    name: "Real Estate Agent",
+    role: "agent",
+    permissions: ["search", "view", "save", "manage_listings", "contact_owners"],
+  },
+]
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,47 +37,39 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Email and password are required" }, { status: 400 })
     }
 
-    await client.connect()
-    const db = client.db("trueestate")
-    const users = db.collection("users")
-
-    const user = await users.findOne({ email: email.toLowerCase() })
+    // Find user by email and password
+    const user = users.find((u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password)
 
     if (!user) {
       return NextResponse.json({ message: "Invalid email or password" }, { status: 401 })
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password)
-
-    if (!isPasswordValid) {
-      return NextResponse.json({ message: "Invalid email or password" }, { status: 401 })
-    }
-
+    // Generate JWT token with role information
     const token = jwt.sign(
       {
-        userId: user._id,
+        userId: user.id,
         email: user.email,
         name: user.name,
+        role: user.role,
+        permissions: user.permissions,
       },
-      process.env.JWT_SECRET!,
+      process.env.JWT_SECRET || "fallback-secret",
       { expiresIn: "7d" },
     )
-
-    await users.updateOne({ _id: user._id }, { $set: { lastLogin: new Date() } })
 
     return NextResponse.json({
       message: "Sign in successful",
       token,
       user: {
-        id: user._id,
+        id: user.id,
         email: user.email,
         name: user.name,
+        role: user.role,
+        permissions: user.permissions,
       },
     })
   } catch (error) {
     console.error("Sign in error:", error)
     return NextResponse.json({ message: "Internal server error" }, { status: 500 })
-  } finally {
-    await client.close()
   }
 }

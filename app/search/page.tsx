@@ -1,5 +1,5 @@
-import SearchInterface from "@/components/search-interface"
+import AdvancedSearch from "@/components/advanced-search"
 
 export default function SearchPage() {
-  return <SearchInterface />
+  return <AdvancedSearch />
 }

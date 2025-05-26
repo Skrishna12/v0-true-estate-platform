@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import LandingPage from "@/components/landing-page"
-import MapView from "@/components/map-view"
+import EnhancedMapView from "@/components/enhanced-map-view"
 
 export default function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -30,9 +30,9 @@ export default function HomePage() {
     )
   }
 
-  // If logged in, show map view directly
+  // If logged in, show enhanced map view directly
   if (isLoggedIn) {
-    return <MapView />
+    return <EnhancedMapView />
   }
 
   // If not logged in, show landing page

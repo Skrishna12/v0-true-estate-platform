@@ -17,21 +17,18 @@ export async function POST(request: NextRequest) {
     const db = client.db("trueestate")
     const users = db.collection("users")
 
-    // Find user by email
     const user = await users.findOne({ email: email.toLowerCase() })
 
     if (!user) {
       return NextResponse.json({ message: "Invalid email or password" }, { status: 401 })
     }
 
-    // Check password
     const isPasswordValid = await bcrypt.compare(password, user.password)
 
     if (!isPasswordValid) {
       return NextResponse.json({ message: "Invalid email or password" }, { status: 401 })
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       {
         userId: user._id,
@@ -42,7 +39,6 @@ export async function POST(request: NextRequest) {
       { expiresIn: "7d" },
     )
 
-    // Update last login
     await users.updateOne({ _id: user._id }, { $set: { lastLogin: new Date() } })
 
     return NextResponse.json({

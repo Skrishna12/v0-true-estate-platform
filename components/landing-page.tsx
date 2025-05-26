@@ -88,11 +88,11 @@ export default function LandingPage() {
       </div>
 
       {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b">
+      <nav className="bg-white/95 backdrop-blur-sm shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <div className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2">
               <div className="bg-blue-600 p-2 rounded-lg">
                 <Building2 className="h-6 w-6 text-white" />
               </div>
@@ -100,21 +100,33 @@ export default function LandingPage() {
                 <span className="text-xl font-bold text-gray-900">TrueEstate</span>
                 <span className="text-xs text-gray-500">Wealth Map & Owner Verification</span>
               </div>
-            </div>
+            </Link>
 
             {/* Navigation Links */}
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-gray-700 hover:text-gray-900 transition-colors">
-                Search Properties
+              <a href="#features" className="text-gray-700 hover:text-gray-900 transition-colors">
+                Features
               </a>
-              <a href="#" className="text-gray-700 hover:text-gray-900 transition-colors">
+              <a href="#about" className="text-gray-700 hover:text-gray-900 transition-colors">
                 About
               </a>
-              <Link href="/sign-in" className="text-gray-700 hover:text-gray-900 transition-colors">
+              <a href="#pricing" className="text-gray-700 hover:text-gray-900 transition-colors">
+                Pricing
+              </a>
+              <Link href="/sign-in" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
                 Sign In
               </Link>
-              <Button asChild className="bg-gray-900 hover:bg-gray-800">
-                <Link href="/sign-up">Get Started</Link>
+              <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white px-6">
+                <Link href="/sign-up">Get Started Free</Link>
+              </Button>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <Button variant="ghost" size="sm">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
               </Button>
             </div>
           </div>
